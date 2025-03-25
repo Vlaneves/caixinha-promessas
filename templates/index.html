@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Caixinha de Promessas</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        button { padding: 10px 20px; font-size: 16px; margin: 10px; }
+        #resultado { margin: 30px; font-size: 18px; color: #2c3e50; }
+    </style>
+</head>
+<body>
+    <h2>Consulte a Promessa de Deus para seu dia</h2>
+    
+    <select id="idioma">
+        <option value="pt">Português</option>
+        <option value="en">English</option>
+        <option value="es">Español</option>
+    </select>
+
+    <button onclick="gerarPromessa()">Obter Promessa</button>
+    
+    <div id="resultado"></div>
+    
+    <p id="cta" style="display: none;">Volte amanhã para novas promessas!</p>
+
+    <script>
+        function gerarPromessa() {
+            const idioma = document.getElementById('idioma').value;
+            
+            fetch('/gerar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'idioma=' + idioma
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('resultado').innerHTML = data.promessa;
+                document.getElementById('cta').style.display = 'block';
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,8 +1,30 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
+import random
+import os
+
+from flask import Flask, render_template, request, redirect
 import random
 import os
 
 app = Flask(__name__)
+
+# Redirecionamento obrigatório para HTTPS e www
+@app.before_request
+def enforce_https_and_www():
+    # Obter host e protocolo da requisição
+    host = request.host.split(':')[0]  # Remove porta se existir
+    scheme = request.scheme
+    
+    # Verificar se precisa redirecionar
+    if host == 'caixinhadapromessa.com' or scheme == 'http':
+        new_url = request.url.replace(
+            'http://', 
+            'https://'
+        ).replace(
+            'caixinhadapromessa.com', 
+            'www.caixinhadapromessa.com'
+        )
+        return redirect(new_url, code=301)
 
 def carregar_promessas():
     return {

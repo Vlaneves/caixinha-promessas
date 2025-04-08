@@ -51,6 +51,7 @@ def carregar_promessas():
     
     return promessas
 
+# --- Rotas Principais ---
 @app.route('/')
 def home():
     """Rota principal que renderiza a página inicial"""
@@ -66,6 +67,27 @@ def gerar_promessa():
         return jsonify({'erro': 'Nenhuma promessa encontrada para o idioma selecionado'}), 400
     
     return jsonify({'promessa': random.choice(promessas[idioma])})
+
+# --- Novas Rotas para AdSense ---
+@app.route('/politica-privacidade')
+def politica_privacidade():
+    """Página de Política de Privacidade"""
+    return render_template('politica-privacidade.html')
+
+@app.route('/termos-uso')
+def termos_uso():
+    """Página de Termos de Uso"""
+    return render_template('termos-uso.html')
+
+@app.route('/quem-somos')
+def quem_somos():
+    """Página Quem Somos"""
+    return render_template('quem-somos.html')
+
+@app.route('/contato')
+def contato():
+    """Página de Contato (Opcional)"""
+    return render_template('contato.html')
 
 if __name__ == '__main__':
     # Configurações para deploy no Render

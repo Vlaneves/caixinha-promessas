@@ -5,9 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Caixinha de Promessas - {% block title %}{% endblock %}</title>
     <style>
-        /* [Mantenha todo seu CSS atual aqui] */
+        :root {
+            --padding-base: 2rem;
+            --azul-principal: #2c82c9;
+            --verde-botao: #27ae60;
+            --vermelho-cta: #c0392b;
+        }
+
+        /* [Seus estilos originais podem ficar aqui] */
+
+        /* Estilos para páginas de conteúdo */
+        .content-page {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
         
-        /* Adicione estes novos estilos para o footer e navegação */
+        .content-page h2 {
+            color: var(--azul-principal);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            text-align: center;
+        }
+        
+        .content-page h3 {
+            color: var(--verde-botao);
+            margin: 1.5rem 0 1rem;
+            font-size: 1.4rem;
+        }
+        
+        .content-page p, 
+        .content-page ul, 
+        .content-page ol {
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .content-page ul, 
+        .content-page ol {
+            padding-left: 1.5rem;
+        }
+        
+        .content-page li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .content-page a {
+            color: var(--azul-principal);
+            text-decoration: underline;
+        }
+
+        /* Footer (mantido do seu original) */
         footer {
             margin-top: 3rem;
             padding: 1.5rem;
@@ -36,10 +87,19 @@
         .footer-links a:hover {
             text-decoration: underline;
         }
-        
-        .content-container {
-            min-height: 60vh;
-            padding: 1rem;
+
+        /* Media Queries para responsividade */
+        @media (max-width: 768px) {
+            .content-page {
+                padding: 1rem;
+                margin: 1rem auto;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 0.5rem;
+                text-align: center;
+            }
         }
     </style>
 </head>

@@ -21,7 +21,7 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            color: #333; /* Cor padrão do texto */
+            color: #333;
         }
 
         /* Container do título */
@@ -36,7 +36,7 @@
         }
 
         h2 {
-            color: white !important; /* Força cor branca */
+            color: white !important;
             font-size: clamp(1.5rem, 6vw, 2rem);
             margin: 0;
             font-weight: bold;
@@ -96,7 +96,7 @@
             font-size: clamp(1rem, 4vw, 1.2rem);
             line-height: 1.6;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            color: #333; /* Cor do texto dos cards */
+            color: #333;
         }
 
         .card[data-color="azul"] { background-color: #a8d8ff; border-left: 5px solid var(--azul-principal); }
@@ -113,10 +113,42 @@
             display: none;
         }
 
+        /* Novos estilos para o footer */
+        footer {
+            margin-top: 3rem;
+            padding: 1rem;
+            background-color: var(--azul-principal);
+            color: white;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
         /* Media Queries */
         @media (max-width: 480px) {
             :root { --padding-base: 1rem; }
             .title-box { padding: 1rem; }
+            .footer-links { flex-direction: column; gap: 0.5rem; }
         }
 
         @media (min-width: 768px) {
@@ -152,6 +184,17 @@
     <div id="resultado" class="card"></div>
     <p id="cta">Volte amanhã para novas promessas!</p>
 
+    <!-- Novo Footer com Links -->
+    <footer>
+        <div class="footer-links">
+            <a href="/">Home</a>
+            <a href="/quem-somos">Quem Somos</a>
+            <a href="/politica-privacidade">Política de Privacidade</a>
+            <a href="/termos-uso">Termos de Uso</a>
+            <a href="/contato">Contato</a>
+        </div>
+    </footer>
+
     <script>
         function gerarPromessa() {
             const idioma = document.getElementById('idioma').value;
@@ -177,7 +220,6 @@
                 alert('Ocorreu um erro. Tente novamente!');
             });
 
-            // Forçar reprodução do vídeo em dispositivos móveis
             document.querySelector('video').play().catch(() => {});
         }
     </script>

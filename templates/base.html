@@ -1,1 +1,59 @@
-
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caixinha de Promessas - {% block title %}{% endblock %}</title>
+    <style>
+        /* [Mantenha todo seu CSS atual aqui] */
+        
+        /* Adicione estes novos estilos para o footer e navegação */
+        footer {
+            margin-top: 3rem;
+            padding: 1.5rem;
+            background-color: var(--azul-principal);
+            color: white;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+        
+        .content-container {
+            min-height: 60vh;
+            padding: 1rem;
+        }
+    </style>
+</head>
+<body>
+    {% block content %}{% endblock %}
+    
+    <footer>
+        <div class="footer-links">
+            <a href="/">Home</a>
+            <a href="/quem-somos">Quem Somos</a>
+            <a href="/politica-privacidade">Política de Privacidade</a>
+            <a href="/termos-uso">Termos de Uso</a>
+            <a href="/contato">Contato</a>
+        </div>
+    </footer>
+</body>
+</html>

@@ -68,7 +68,7 @@ def gerar_promessa():
     
     return jsonify({'promessa': random.choice(promessas[idioma])})
 
-# --- Novas Rotas para AdSense ---
+# --- Rotas para AdSense ---
 @app.route('/politica-privacidade')
 def politica_privacidade():
     """Página de Política de Privacidade"""
@@ -88,6 +88,17 @@ def quem_somos():
 def contato():
     """Página de Contato (Opcional)"""
     return render_template('contato.html')
+
+# --- Rotas do Blog (COMENTADAS - Reative quando criar os templates) ---
+# @app.route('/blog/promessas-ansiedade')
+# def promessas_ansiedade():
+#     """Página de promessas bíblicas sobre ansiedade"""
+#     return render_template('blog/promessas-ansiedade.html')
+
+# @app.route('/blog/guia-leitura-diaria')
+# def guia_leitura_diaria():
+#     """Página com guia de leitura bíblica"""
+#     return render_template('blog/guia-leitura-diaria.html')
 
 if __name__ == '__main__':
     # Configurações para deploy no Render

@@ -6,14 +6,25 @@
     <title>Caixinha da Promessa</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* Estilos adicionais para garantir as cores */
+        .card-blue { background-color: #e3f2fd; }
+        .card-pink { background-color: #fce4ec; }
+        .card-yellow { background-color: #fff8e1; }
+        .card-green { background-color: #e8f5e9; }
+        .mensagem-final { color: red; }
+    </style>
 </head>
 <body class="bg-light">
     <div class="container text-center py-5">
         <h1 class="mb-4">Caixinha da Promessa</h1>
-
-        <!-- GIF da Caixinha -->
+        
+        <!-- Animação da Caixinha -->
         <div class="mb-4">
-            <img src="{{ url_for('static', filename='img/caixinha.gif') }}" alt="Caixinha animada" style="max-width: 200px;">
+            <img src="{{ url_for('static', filename='img/caixinha.gif') }}" 
+                 alt="Caixinha animada" 
+                 style="max-width: 200px;"
+                 id="caixinhaGif">
         </div>
 
         <!-- Seletor de Idioma -->
@@ -32,16 +43,16 @@
             </div>
         </div>
 
-        <!-- Botão "Obter Promessa" -->
+        <!-- Botão Obter Promessa -->
         <button id="gerarBtn" class="btn btn-primary mb-4">Obter sua promessa</button>
 
-        <!-- Botão de Compartilhamento -->
+        <!-- Botão Compartilhar -->
         <button id="shareBtn" class="btn btn-success mb-4" style="display: none;">
             Compartilhar no WhatsApp
         </button>
 
         <!-- Mensagem Final -->
-        <div class="text-danger mt-3">
+        <div class="mensagem-final mt-3">
             Volte amanhã para obter novas promessas!
         </div>
     </div>
@@ -49,32 +60,47 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Variável global para o idioma selecionado
+        // Variáveis globais
         let idiomaSelecionado = 'pt';
-
+        
         // 1. Seleção de Idioma
         document.querySelectorAll('[data-idioma]').forEach(btn => {
             btn.addEventListener('click', function() {
-                // Atualiza o idioma e destaca o botão
                 idiomaSelecionado = this.dataset.idioma;
                 document.querySelectorAll('[data-idioma]').forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
             });
         });
 
-        // 2. Botão "Obter Promessa" (chama a rota /gerar via AJAX)
+        // 2. Botão Obter Promessa
         document.getElementById('gerarBtn').addEventListener('click', async function() {
             try {
                 const response = await fetch('/gerar', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
                     body: `idioma=${idiomaSelecionado}`
                 });
+                
                 const data = await response.json();
                 
                 if (data.status === 'sucesso') {
+                    // Atualiza o versículo
                     document.getElementById('versiculo').textContent = data.promessa;
+                    
+                    // Mostra botão de compartilhar
                     document.getElementById('shareBtn').style.display = 'block';
+                    
+                    // Animação da caixinha (recarrega o GIF)
+                    const gif = document.getElementById('caixinhaGif');
+                    gif.src = gif.src.split('?')[0] + '?' + new Date().getTime();
+                    
+                    // Muda cor do card aleatoriamente
+                    const cores = ['blue', 'pink', 'yellow', 'green'];
+                    const card = document.querySelector('.card');
+                    cores.forEach(c => card.classList.remove(`card-${c}`));
+                    card.classList.add(`card-${cores[Math.floor(Math.random() * cores.length)]}`);
                 }
             } catch (error) {
                 console.error("Erro ao obter promessa:", error);
@@ -84,8 +110,18 @@
         // 3. Compartilhamento no WhatsApp
         document.getElementById('shareBtn').addEventListener('click', function() {
             const versiculo = document.getElementById('versiculo').textContent;
-            const shareUrl = `https://wa.me/?text=${encodeURIComponent(versiculo + "\n\n✨ Caixinha da Promessa ✨")}`;
+            const shareUrl = `https://wa.me/?text=${encodeURIComponent(
+                `${versiculo}\n\n✨ Caixinha da Promessa ✨\n${window.location.href}`
+            )}`;
             window.open(shareUrl, '_blank');
+        });
+
+        // 4. Forçar recarregamento do GIF ao carregar a página
+        window.addEventListener('load', function() {
+            const gif = document.getElementById('caixinhaGif');
+            if (gif) {
+                gif.src = gif.src.split('?')[0] + '?' + new Date().getTime();
+            }
         });
     </script>
 </body>

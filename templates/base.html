@@ -1,20 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Caixinha de Promessas - {% block title %}{% endblock %}</title>
+    <!-- [Seu head atual aqui] -->
     <style>
-        :root {
-            --padding-base: 2rem;
-            --azul-principal: #2c82c9;
-            --verde-botao: #27ae60;
-            --vermelho-cta: #c0392b;
-        }
-
-        /* [Seus estilos originais podem ficar aqui] */
-
-        /* Estilos para páginas de conteúdo */
+        /* Adicione isto ao seu CSS existente */
         .content-page {
             max-width: 800px;
             margin: 2rem auto;
@@ -25,10 +14,9 @@
         }
         
         .content-page h2 {
-            color: var(--azul-principal);
+            color: var(--azul-principal) !important;
             margin-bottom: 1.5rem;
             font-size: 1.8rem;
-            text-align: center;
         }
         
         .content-page h3 {
@@ -37,83 +25,25 @@
             font-size: 1.4rem;
         }
         
-        .content-page p, 
-        .content-page ul, 
-        .content-page ol {
-            line-height: 1.6;
-            margin-bottom: 1rem;
-        }
-        
-        .content-page ul, 
-        .content-page ol {
+        .content-page ul, ol {
+            margin: 1rem 0;
             padding-left: 1.5rem;
         }
         
         .content-page li {
             margin-bottom: 0.5rem;
+            line-height: 1.6;
         }
         
         .content-page a {
             color: var(--azul-principal);
             text-decoration: underline;
         }
-
-        /* Footer (mantido do seu original) */
-        footer {
-            margin-top: 3rem;
-            padding: 1.5rem;
-            background-color: var(--azul-principal);
-            color: white;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        
-        .footer-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        
-        .footer-links a:hover {
-            text-decoration: underline;
-        }
-
-        /* Media Queries para responsividade */
-        @media (max-width: 768px) {
-            .content-page {
-                padding: 1rem;
-                margin: 1rem auto;
-            }
-            
-            .footer-links {
-                flex-direction: column;
-                gap: 0.5rem;
-                text-align: center;
-            }
-        }
     </style>
 </head>
 <body>
     {% block content %}{% endblock %}
     
-    <footer>
-        <div class="footer-links">
-            <a href="/">Home</a>
-            <a href="/quem-somos">Quem Somos</a>
-            <a href="/politica-privacidade">Política de Privacidade</a>
-            <a href="/termos-uso">Termos de Uso</a>
-            <a href="/contato">Contato</a>
-        </div>
-    </footer>
+    <!-- [Seu footer atual aqui] -->
 </body>
 </html>

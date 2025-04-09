@@ -1,111 +1,41 @@
-from flask import Flask, render_template, request, redirect, jsonify
+from flask import Flask, render_template, request, jsonify
 import random
 import os
 
 app = Flask(__name__)
 
-# Configurações de segurança e redirecionamento
-@app.before_request
-def handle_redirections():
-    """
-    Gerencia redirecionamentos de forma segura, evitando loops.
-    """
-    # Só aplica redirecionamentos em produção (Render)
-    if os.environ.get('RENDER', '').lower() not in ('true', '1', 'on'):
-        return
-
-    original_url = request.url
-    new_url = None
-
-    # 1. Redireciona HTTP para HTTPS
-    if request.scheme == 'http':
-        new_url = original_url.replace('http://', 'https://', 1)
-    
-    # 2. Remove www. se necessário (opcional - descomente se quiser forçar sem www)
-    # elif request.host.startswith('www.'):
-    #     new_url = original_url.replace('www.', '', 1)
-
-    if new_url and new_url != original_url:
-        return redirect(new_url, code=301)
-
+# --- Carregamento das Promessas (Método garantido) ---
 def carregar_promessas():
-    """Carrega as promessas dos arquivos de texto"""
-    promessas = {
-        'pt': [],
-        'en': [],
-        'es': []
-    }
-    
+    promessas = {'pt': [], 'en': [], 'es': []}
     try:
-        with open('promessas_pt.txt', 'r', encoding='utf-8') as f:
-            promessas['pt'] = [linha.strip() for linha in f if linha.strip()]
-        
-        with open('promessas_en.txt', 'r', encoding='utf-8') as f:
-            promessas['en'] = [linha.strip() for linha in f if linha.strip()]
-        
-        with open('promessas_es.txt', 'r', encoding='utf-8') as f:
-            promessas['es'] = [linha.strip() for linha in f if linha.strip()]
-    
-    except FileNotFoundError as e:
-        print(f"Erro ao carregar arquivos: {e}")
-    
+        for lang in promessas.keys():
+            with open(f'promessas_{lang}.txt', 'r', encoding='utf-8') as f:
+                promessas[lang] = [linha.strip() for linha in f if linha.strip()]
+    except Exception as e:
+        print(f"ERRO CRÍTICO: {str(e)}")
     return promessas
 
-# --- Rotas Principais ---
+# --- Rotas Principais (Idênticas à versão original) ---
 @app.route('/')
 def home():
-    """Rota principal que renderiza a página inicial"""
     return render_template('index.html')
 
 @app.route('/gerar', methods=['POST'])
 def gerar_promessa():
-    """Rota para gerar promessas aleatórias"""
     idioma = request.form.get('idioma', 'pt')
     promessas = carregar_promessas()
     
     if not promessas[idioma]:
-        return jsonify({'erro': 'Nenhuma promessa encontrada para o idioma selecionado'}), 400
+        return jsonify({'erro': 'Nenhuma promessa encontrada'}), 400
     
     return jsonify({'promessa': random.choice(promessas[idioma])})
 
-# --- Rotas para AdSense ---
+# --- Rotas AdSense (Opcionais) ---
 @app.route('/politica-privacidade')
 def politica_privacidade():
-    """Página de Política de Privacidade"""
     return render_template('politica-privacidade.html')
 
-@app.route('/termos-uso')
-def termos_uso():
-    """Página de Termos de Uso"""
-    return render_template('termos-uso.html')
-
-@app.route('/quem-somos')
-def quem_somos():
-    """Página Quem Somos"""
-    return render_template('quem-somos.html')
-
-@app.route('/contato')
-def contato():
-    """Página de Contato (Opcional)"""
-    return render_template('contato.html')
-
-# --- Rotas do Blog (COMENTADAS - Reative quando criar os templates) ---
-# @app.route('/blog/promessas-ansiedade')
-# def promessas_ansiedade():
-#     """Página de promessas bíblicas sobre ansiedade"""
-#     return render_template('blog/promessas-ansiedade.html')
-
-# @app.route('/blog/guia-leitura-diaria')
-# def guia_leitura_diaria():
-#     """Página com guia de leitura bíblica"""
-#     return render_template('blog/guia-leitura-diaria.html')
+# ... (mantenha as outras rotas legais)
 
 if __name__ == '__main__':
-    # Configurações para deploy no Render
-    port = int(os.environ.get('PORT', 5000))
-    host = os.environ.get('HOST', '0.0.0.0')
-    
-    # Modo debug apenas em desenvolvimento
-    debug = os.environ.get('DEBUG', 'false').lower() in ('true', '1', 'on')
-    
-    app.run(host=host, port=port, debug=debug)
+    app.run(host='0.0.0.0', port=5000)

@@ -1,49 +1,137 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <!-- [Seu head atual aqui] -->
+    <!-- Metadados Básicos -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Caixinha da Promessa{% endblock %}</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Seu CSS Principal -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    
+    <!-- CSS para Páginas Institucionais -->
     <style>
-        /* Adicione isto ao seu CSS existente */
-        .content-page {
+        /* Cores Temáticas */
+        :root {
+            --azul-primario: #2c3e50;
+            --verde-secundario: #27ae60;
+            --destaque-1: #8e44ad;
+            --destaque-2: #e67e22;
+        }
+        
+        /* Layout Base */
+        .pagina-institucional {
             max-width: 800px;
-            margin: 2rem auto;
-            padding: 2rem;
+            margin: 40px auto;
+            padding: 30px;
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
         }
         
-        .content-page h2 {
-            color: var(--azul-principal) !important;
-            margin-bottom: 1.5rem;
-            font-size: 1.8rem;
+        /* Títulos */
+        .titulo-pagina {
+            color: var(--azul-primario);
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--azul-primario);
         }
         
-        .content-page h3 {
-            color: var(--verde-botao);
-            margin: 1.5rem 0 1rem;
-            font-size: 1.4rem;
+        /* Blocos de Conteúdo */
+        .bloco-informativo {
+            border-left: 4px solid var(--azul-primario);
+            padding: 20px;
+            margin-bottom: 25px;
+            background: #f8f9fa;
+            border-radius: 0 5px 5px 0;
         }
         
-        .content-page ul, ol {
-            margin: 1rem 0;
-            padding-left: 1.5rem;
+        .bloco-informativo.termos {
+            border-left-color: var(--destaque-1);
         }
         
-        .content-page li {
-            margin-bottom: 0.5rem;
-            line-height: 1.6;
+        .bloco-informativo.contato {
+            border-left-color: var(--destaque-2);
         }
         
-        .content-page a {
-            color: var(--azul-principal);
-            text-decoration: underline;
+        /* Elementos Internos */
+        .bloco-informativo h3 {
+            color: inherit;
+            margin-top: 0;
+        }
+        
+        .lista-informativa {
+            padding-left: 20px;
+        }
+        
+        .lista-informativa li {
+            margin-bottom: 8px;
         }
     </style>
+    
+    <!-- CSS Adicional por Página -->
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
-    {% block content %}{% endblock %}
+    <!-- Barra de Navegação (opcional) -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" height="30" class="me-2">
+                Caixinha da Promessa
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/quem-somos">Quem Somos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contato">Contato</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Conteúdo Principal -->
+    <main class="container my-4">
+        {% block content %}
+        <!-- Seu conteúdo existente será renderizado aqui -->
+        {% endblock %}
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="bg-dark text-white py-3 mt-4">
+        <div class="container text-center">
+            <div class="mb-2">
+                <a href="/politica-de-privacidade" class="text-white mx-2">Política de Privacidade</a>
+                <a href="/termos-de-uso" class="text-white mx-2">Termos de Uso</a>
+                <a href="/quem-somos" class="text-white mx-2">Quem Somos</a>
+                <a href="/contato" class="text-white mx-2">Contato</a>
+            </div>
+            <p class="m-0">&copy; <span id="ano-atual"></span> Caixinha da Promessa. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts Essenciais -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- [Seu footer atual aqui] -->
+    <!-- Script para Ano Atual -->
+    <script>
+        document.getElementById('ano-atual').textContent = new Date().getFullYear();
+    </script>
+    
+    <!-- Scripts Adicionais por Página -->
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

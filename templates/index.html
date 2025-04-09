@@ -10,31 +10,38 @@
 <body class="bg-light">
     <div class="container text-center py-5">
         <h1 class="mb-4">Caixinha da Promessa</h1>
-        
-        <!-- Substituição do GIF pelo vídeo (auto-reproduz em loop) -->
+
+        <!-- GIF da Caixinha -->
         <div class="mb-4">
-            <video autoplay loop muted playsinline style="max-width: 200px;">
-                <source src="https://i.imgur.com/JVMCppD.mp4" type="video/mp4">
-                Seu navegador não suporta vídeos HTML5.
-            </video>
+            <img src="{{ url_for('static', filename='img/caixinha.gif') }}" alt="Caixinha animada" style="max-width: 200px;">
         </div>
+
+        <!-- Seletor de Idioma -->
+        <form id="idiomaForm" class="mb-4">
+            <div class="btn-group" role="group">
+                <button type="button" data-idioma="pt" class="btn btn-outline-primary active">Português</button>
+                <button type="button" data-idioma="en" class="btn btn-outline-primary">English</button>
+                <button type="button" data-idioma="es" class="btn btn-outline-primary">Español</button>
+            </div>
+        </form>
 
         <!-- Card da Promessa -->
         <div class="card mx-auto mb-4 {{ card_class }}" style="max-width: 500px;">
             <div class="card-body">
-                <p class="card-text fs-5">{{ verse }}</p>
+                <p class="card-text fs-5" id="versiculo">Clique no botão abaixo para obter uma promessa!</p>
             </div>
         </div>
 
-        <!-- Botão de Compartilhamento -->
-        <div class="mb-4">
-            <button id="shareBtn" class="btn btn-success">
-                Compartilhar no WhatsApp
-            </button>
-        </div>
+        <!-- Botão "Obter Promessa" -->
+        <button id="gerarBtn" class="btn btn-primary mb-4">Obter sua promessa</button>
 
-        <!-- Mensagem Final (em vermelho) -->
-        <div class="mensagem-final text-danger mt-3">
+        <!-- Botão de Compartilhamento -->
+        <button id="shareBtn" class="btn btn-success mb-4" style="display: none;">
+            Compartilhar no WhatsApp
+        </button>
+
+        <!-- Mensagem Final -->
+        <div class="text-danger mt-3">
             Volte amanhã para obter novas promessas!
         </div>
     </div>
@@ -42,10 +49,42 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Compartilhamento no WhatsApp
+        // Variável global para o idioma selecionado
+        let idiomaSelecionado = 'pt';
+
+        // 1. Seleção de Idioma
+        document.querySelectorAll('[data-idioma]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Atualiza o idioma e destaca o botão
+                idiomaSelecionado = this.dataset.idioma;
+                document.querySelectorAll('[data-idioma]').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // 2. Botão "Obter Promessa" (chama a rota /gerar via AJAX)
+        document.getElementById('gerarBtn').addEventListener('click', async function() {
+            try {
+                const response = await fetch('/gerar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `idioma=${idiomaSelecionado}`
+                });
+                const data = await response.json();
+                
+                if (data.status === 'sucesso') {
+                    document.getElementById('versiculo').textContent = data.promessa;
+                    document.getElementById('shareBtn').style.display = 'block';
+                }
+            } catch (error) {
+                console.error("Erro ao obter promessa:", error);
+            }
+        });
+
+        // 3. Compartilhamento no WhatsApp
         document.getElementById('shareBtn').addEventListener('click', function() {
-            const verse = "{{ verse }}";
-            const shareUrl = `https://wa.me/?text=${encodeURIComponent(verse + "\n\n✨ Caixinha da Promessa ✨")}`;
+            const versiculo = document.getElementById('versiculo').textContent;
+            const shareUrl = `https://wa.me/?text=${encodeURIComponent(versiculo + "\n\n✨ Caixinha da Promessa ✨")}`;
             window.open(shareUrl, '_blank');
         });
     </script>

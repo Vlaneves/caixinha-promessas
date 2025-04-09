@@ -4,44 +4,111 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Caixinha de Promessas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --padding-base: 2rem;
-            --azul-principal: #2c82c9;
-            --verde-botao: #27ae60;
-            --vermelho-cta: #c0392b;
+            --primary-color: #2c82c9;
+            --secondary-color: #27ae60;
+            --text-color: #333;
+            --bg-color: #f5f5f5;
+            --card-bg: #ffffff;
         }
 
         body {
-            font-family: 'Arial', sans-serif;
-            text-align: center;
-            padding: var(--padding-base);
-            background-color: #f5f5f5;
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            align-items: center;
             justify-content: center;
-            color: #333;
         }
 
-        /* [Seus outros estilos existentes permanecem iguais...] */
+        .container {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
 
-        /* NOVOS ESTILOS PARA O BOTÃO DO WHATSAPP */
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 30px;
+        }
+
+        .video-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 20px auto;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        video {
+            width: 100%;
+            height: auto;
+        }
+
+        select, button {
+            padding: 12px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        select {
+            background-color: white;
+            border: 1px solid #ddd;
+        }
+
+        button {
+            background-color: var(--secondary-color);
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            padding: 30px;
+            margin: 30px auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-width: 600px;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        #cta {
+            font-style: italic;
+            color: #666;
+        }
+
         .whatsapp-button {
             display: inline-flex;
             align-items: center;
             gap: 8px;
             background: #25D366;
             color: white !important;
-            padding: 8px 16px;
+            padding: 10px 20px;
             border-radius: 50px;
             text-decoration: none;
             font-weight: bold;
-            margin-top: 15px;
+            margin-top: 20px;
             transition: all 0.3s ease;
             border: none;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 16px;
         }
 
         .whatsapp-button:hover {
@@ -51,24 +118,52 @@
         }
 
         .whatsapp-button img {
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
+        }
+
+        footer {
+            margin-top: 40px;
+            font-size: 14px;
+            color: #777;
         }
     </style>
 </head>
 <body>
-    <!-- [Todo o conteúdo existente permanece igual até a div#resultado...] -->
-    
-    <div id="resultado" class="card"></div>
-    <p id="cta">Volte amanhã para novas promessas!</p>
+    <div class="container">
+        <h1>Caixinha de Promessas</h1>
+        <p>Receba uma promessa bíblica para o seu dia:</p>
+        
+        <div class="video-container">
+            <video autoplay muted loop playsinline>
+                <source src="{{ url_for('static', filename='video.mp4') }}" type="video/mp4">
+                Seu navegador não suporta vídeos HTML5.
+            </video>
+        </div>
+        
+        <select id="idioma">
+            <option value="pt">Português</option>
+            <option value="en">English</option>
+            <option value="es">Español</option>
+        </select>
+        
+        <button onclick="gerarPromessa()">Gerar Promessa</button>
+        
+        <div id="resultado" class="card"></div>
+        <p id="cta" style="display: none;">Volte amanhã para novas promessas!</p>
 
-    <!-- [Footer e outros elementos permanecem iguais...] -->
+        <footer>
+            <p>© 2023 Caixinha de Promessas | <a href="/blog/promessas-ansiedade">Blog</a></p>
+        </footer>
+    </div>
 
     <script>
         function gerarPromessa() {
             const idioma = document.getElementById('idioma').value;
-            const colors = ['azul', 'amarelo', 'verde', 'rosa'];
-            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            const resultado = document.getElementById('resultado');
+            
+            // Mostra estado de carregamento
+            resultado.innerHTML = '<p>Buscando sua promessa...</p>';
             
             fetch('/gerar', {
                 method: 'POST',
@@ -77,37 +172,45 @@
                 },
                 body: 'idioma=' + idioma
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) throw new Error('Erro na rede');
+                return response.json();
+            })
             .then(data => {
-                const resultado = document.getElementById('resultado');
+                if (data.status === 'erro') throw new Error(data.promessa);
+                
                 resultado.innerHTML = `
-                    ${data.promessa}
-                    <button class="whatsapp-button" onclick="compartilharVersiculo('${data.promessa.replace(/'/g, "\\'")}')">
+                    <p>${data.promessa}</p>
+                    <button class="whatsapp-button" onclick="compartilharVersiculo('${escapeHtml(data.promessa)}')">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
                         Compartilhar
                     </button>
                 `;
-                resultado.setAttribute('data-color', randomColor);
                 document.getElementById('cta').style.display = 'block';
             })
             .catch(error => {
                 console.error('Erro:', error);
-                alert('Ocorreu um erro. Tente novamente!');
+                resultado.innerHTML = `<p>${error.message || 'Ocorreu um erro. Tente novamente!'}</p>`;
             });
 
-            document.querySelector('video').play().catch(() => {});
+            // Tenta reproduzir o vídeo (para alguns navegadores mobile)
+            document.querySelector('video').play().catch(e => console.log('Auto-play não permitido:', e));
         }
 
-        // NOVA FUNÇÃO PARA COMPARTILHAR
         function compartilharVersiculo(versiculo) {
-            // Remove tags HTML e limpa o texto
             const textoLimpo = versiculo.replace(/<[^>]*>/g, '').replace(/\n/g, ' ').trim();
-            
-            // Cria a mensagem codificada para URL
-            const mensagem = `Olha que versículo incrível encontrei na *Caixinha de Promessas*:%0A%0A${encodeURIComponent(textoLimpo)}%0A%0A🔍 Veja mais em: ${encodeURIComponent(window.location.href)}`;
-            
-            // Abre o WhatsApp
-            window.open(`https://wa.me/?text=${mensagem}`, '_blank');
+            const mensagem = `🌟 Promessa Bíblica 🌟\n\n${textoLimpo}\n\n🔍 Receba sua promessa diária em: ${window.location.href}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(mensagem)}`, '_blank');
+        }
+
+        // Proteção contra XSS
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
         }
     </script>
 </body>

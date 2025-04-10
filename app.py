@@ -1,19 +1,8 @@
-from flask import Flask, render_template, request, redirect, jsonify, flash, url_for
+from flask import Flask, render_template, request, redirect, jsonify
 import random
 import os
-from flask_mail import Mail, Message  # Adicionando suporte a e-mail (opcional)
 
 app = Flask(__name__)
-app.secret_key = os.environ.get('SECRET_KEY', 'uma-chave-secreta-padrao')  # Necessário para flash messages
-
-# Configurações do Flask-Mail (opcional - descomente se quiser enviar e-mails)
-# app.config['MAIL_SERVER'] = 'smtp.seuprovedor.com'
-# app.config['MAIL_PORT'] = 587
-# app.config['MAIL_USE_TLS'] = True
-# app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
-# app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
-# app.config['MAIL_DEFAULT_SENDER'] = 'contato@caixinha.com.br'
-# mail = Mail(app)
 
 # Configurações de segurança e redirecionamento
 @app.before_request
@@ -32,6 +21,10 @@ def handle_redirections():
     if request.scheme == 'http':
         new_url = original_url.replace('http://', 'https://', 1)
     
+    # 2. Remove www. se necessário (opcional - descomente se quiser forçar sem www)
+    # elif request.host.startswith('www.'):
+    #     new_url = original_url.replace('www.', '', 1)
+
     if new_url and new_url != original_url:
         return redirect(new_url, code=301)
 
@@ -75,7 +68,7 @@ def gerar_promessa():
     
     return jsonify({'promessa': random.choice(promessas[idioma])})
 
-# --- Rotas Institucionais ---
+# --- Novas Rotas para AdSense ---
 @app.route('/politica-privacidade')
 def politica_privacidade():
     """Página de Política de Privacidade"""
@@ -91,52 +84,10 @@ def quem_somos():
     """Página Quem Somos"""
     return render_template('quem-somos.html')
 
-@app.route('/contato', methods=['GET', 'POST'])
+@app.route('/contato')
 def contato():
-    """Página de Contato com formulário funcional"""
-    if request.method == 'POST':
-        # Captura os dados do formulário
-        nome = request.form.get('nome')
-        email = request.form.get('email')
-        mensagem = request.form.get('mensagem')
-        
-        # Validação básica
-        if not all([nome, email, mensagem]):
-            flash('Por favor, preencha todos os campos do formulário.', 'danger')
-            return redirect(url_for('contato'))
-        
-        # Aqui você pode:
-        # 1. Salvar em um banco de dados (recomendado para produção)
-        salvar_contato(nome, email, mensagem)
-        
-        # 2. Enviar por e-mail (opcional - requer configuração do Flask-Mail)
-        # enviar_email_contato(nome, email, mensagem)
-        
-        # Mensagem de sucesso
-        flash('Sua mensagem foi enviada com sucesso! Entraremos em contato em breve.', 'success')
-        return redirect(url_for('contato'))
-    
+    """Página de Contato (Opcional)"""
     return render_template('contato.html')
-
-def salvar_contato(nome, email, mensagem):
-    """Salva o contato em um arquivo simples (substitua por banco de dados se necessário)"""
-    try:
-        with open('contatos.txt', 'a', encoding='utf-8') as f:
-            f.write(f"{nome}|{email}|{mensagem}\n")
-    except Exception as e:
-        print(f"Erro ao salvar contato: {e}")
-
-# Função opcional para enviar e-mail
-# def enviar_email_contato(nome, email, mensagem):
-#     try:
-#         msg = Message(
-#             subject=f"Novo contato de {nome}",
-#             recipients=['seu-email@provedor.com'],
-#             body=f"De: {nome} <{email}>\n\n{mensagem}"
-#         )
-#         mail.send(msg)
-#     except Exception as e:
-#         print(f"Erro ao enviar e-mail: {e}")
 
 if __name__ == '__main__':
     # Configurações para deploy no Render

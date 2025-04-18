@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, jsonify
+from flask import Flask, render_template, request, redirect, jsonify, send_from_directory
 import random
 import os
 
@@ -10,6 +10,10 @@ def handle_redirections():
     """
     Gerencia redirecionamentos de forma segura, evitando loops.
     """
+    # Ignora requisições para favicon (evita redirecionamentos desnecessários)
+    if request.path == '/favicon.ico':
+        return
+    
     # Só aplica redirecionamentos em produção (Render)
     if os.environ.get('RENDER', '').lower() not in ('true', '1', 'on'):
         return
@@ -56,6 +60,13 @@ def carregar_promessas():
 def home():
     """Rota principal que renderiza a página inicial"""
     return render_template('index.html')
+
+# Nova rota para favicon (solução definitiva)
+@app.route('/favicon.ico')
+def favicon():
+    """Rota para servir o favicon corretamente"""
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                             'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 @app.route('/gerar', methods=['POST'])
 def gerar_promessa():

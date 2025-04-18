@@ -8,19 +8,22 @@
     <!-- [Barra de navegação permanece IGUAL] -->
     <!-- ... (navbar) ... -->
 
-    <!-- Conteúdo Principal - AQUI VEM A MODIFICAÇÃO -->
+    <!-- Conteúdo Principal - MODIFICAÇÃO SIMPLIFICADA -->
     <main class="container my-4">
         {% block content %}
-        <!-- Bloco de compartilhamento (adicione isto onde a promessa é exibida) -->
-        {% if promessa_texto %}
+        <!-- Bloco de compartilhamento (TESTE FORÇADO) -->
         <div class="promessa-container bg-light p-4 rounded mb-4">
             <div class="row align-items-center">
                 <div class="col-md-8">
-                    <p class="fs-5">{{ promessa_texto }}</p>
+                    {% if promessa_texto %}
+                        <p class="fs-5">{{ promessa_texto }}</p>
+                    {% else %}
+                        <p class="fs-5">"Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito..." (João 3:16)</p>
+                    {% endif %}
                 </div>
                 <div class="col-md-4 text-md-end mt-3 mt-md-0">
                     <p class="text-muted mb-2">Compartilhe com quem você ama:</p>
-                    <a href="https://api.whatsapp.com/send?text=🌟 Promessa Bíblica 🌟%0A%0A{{ promessa_texto|urlencode }}%0A%0AVeja mais em: {{ request.url|urlencode }}" 
+                    <a href="https://api.whatsapp.com/send?text=🌟 Promessa Bíblica 🌟%0A%0A{% if promessa_texto %}{{ promessa_texto|urlencode }}{% else %}Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito... (João 3:16){% endif %}%0A%0AVeja mais em: {{ request.url|urlencode }}" 
                        class="btn btn-success" 
                        target="_blank"
                        style="background-color: #25D366; border-color: #25D366;">
@@ -32,7 +35,6 @@
                 </div>
             </div>
         </div>
-        {% endif %}
         
         <!-- Seu conteúdo existente será renderizado aqui -->
         {% endblock %}

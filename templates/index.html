@@ -1,22 +1,21 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="card text-center p-4">
+<div class="card text-center">
     <div class="card-body">
         <h1 class="card-title">Caixinha de Promessas</h1>
-        <p class="card-text">Clique no botão abaixo para receber uma promessa de Deus para sua vida hoje!</p>
+        <p class="card-text lead-text">Clique no botão abaixo para receber uma promessa de Deus para sua vida hoje!</p>
         
         <form action="/" method="post">
-            <button type="submit" class="btn btn-primary btn-lg">Receber Promessa</button>
+            <button type="submit" class="btn btn-primary">Receber Promessa</button>
         </form>
 
         {% if versiculo %}
-        <div class="mt-4 p-3 bg-light rounded">
+        <div class="mt-4 p-4 bg-light rounded">
             <h3>{{ versiculo['livro'] }} {{ versiculo['capitulo'] }}:{{ versiculo['versiculo'] }}</h3>
             <p class="lead">{{ versiculo['texto'] }}</p>
             
-            <!-- Botão de compartilhamento -->
-            <button onclick="compartilharWhatsApp()" class="btn btn-whatsapp">
+            <button onclick="compartilharWhatsApp()" class="btn btn-success">
                 <i class="bi bi-whatsapp"></i> Compartilhar este versículo
             </button>
             <p class="text-muted small mt-2">Compartilhe este versículo com alguém que você ama</p>
@@ -36,8 +35,7 @@
                           "Compartilhado via Caixinha de Promessas";
             
             const textoCodificado = encodeURIComponent(texto);
-            const urlWhatsApp = `https://wa.me/?text=${textoCodificado}`;
-            window.open(urlWhatsApp, '_blank');
+            window.open(`https://wa.me/?text=${textoCodificado}`, '_blank');
         {% endif %}
     }
 </script>
